@@ -5,6 +5,7 @@ const typeDefs = `
 	type Query {
 		hello(name: String): String!
 		users: [User]!
+		user(where: whereUserInput!): User!
 	}
 
 	type Mutation {
@@ -24,6 +25,10 @@ const typeDefs = `
 		tel: String!
 	}
 
+	input whereUserInput {
+		id: ID!
+	}
+
 `;
 
 const resolvers = {
@@ -33,6 +38,11 @@ const resolvers = {
 		async users(parent, args, ctx, info) {
 			const users = await ctx.db.dbUser.find({});
 			return users;
+		},
+		async user(parent, args, ctx, info) {
+			const id = args.where.id
+			const user = await ctx.db.dbUser.findOne({_id: id});
+			return user;
 		}
 	},
 	Mutation: {
